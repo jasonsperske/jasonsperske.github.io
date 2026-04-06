@@ -1,0 +1,14 @@
+{
+  "wallColor": "#8B4513",
+  "floorColor": "#2c1810",
+  "ceilingColor": "#1a0f08",
+  "doorFrequency": 0.15,
+  "ambientLight": 0.02,
+  "lightSpacing": 12,
+  "halfHeightPartitions": true,
+  "halfHeightColor": "#6B3410",
+  "halfHeightFrequency": 0.25,
+  "widerRooms": false,
+  "widerRoomFrequency": 0.0,
+  "shader": "vhs"
+}
