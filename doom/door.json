@@ -1,0 +1,12 @@
+{
+    "episode": 1,
+    "leve": 1,
+    "listeners": [
+        {
+            "linedef": 49,
+            "type": "cross",
+            "side": 0,
+            "door_id": "E1M1-normal"
+        }
+    ]
+}
