@@ -14,21 +14,16 @@ function readCString(ptr) {
     return new TextDecoder('utf8').decode(new Uint8Array(memory.buffer, ptr, len));
 }
 
-function consoleLogString(offset, length) {
-    const string = readWasmString(offset, length);
-    console.log("\"" + string + "\"");
-}
-
 function appendOutput(style) {
     return function (offset, length) {
-        const lines = readWasmString(offset, length).split('\n');
-        for (var i = 0; i < lines.length; ++i) {
-            if (lines[i].length == 0) {
-                continue;
-            }
-            // uncomment to see engine output
-            // console.log(lines[i]);
-        }
+        // uncomment to see engine output
+        // const lines = readWasmString(offset, length).split('\n');
+        // for (var i = 0; i < lines.length; ++i) {
+        //     if (lines[i].length == 0) {
+        //         continue;
+        //     }            
+        //     console.log(lines[i]);
+        // }
     }
 }
 
@@ -58,9 +53,15 @@ var importObject = {
     env: {
         memory: memory,
         // C externs compile to "env" module imports in wasm32, not "js"
+        js_doom_quit: () => {
+            _doomRunning = false;
+            document.dispatchEvent(new CustomEvent('doomQuit'));
+        },
         js_level_loaded: (episode, map) => {
-            console.log(`[doom] level loaded: episode ${episode}, map ${map}`);
             window._lastLevelLoaded = { episode, map };
+            // C has already cleared the watcher list for the new level.
+            // Re-register every linedef that JS still has callbacks for.
+            linedefListeners.forEach((_, idx) => _doomExports.watch_linedef(idx));
             document.dispatchEvent(new CustomEvent('levelLoaded', { detail: { episode, map } }));
         },
         js_linedef_used: (linedefIdx, side) => {
@@ -129,6 +130,7 @@ function setupArgv(args) {
 const linedefListeners = new Map(); // linedefIdx → Set<callback>  (crossing)
 const useListeners = new Map(); // linedefIdx → Set<callback>  (use/activate)
 let _doomExports = null;            // set once WASM is instantiated
+let _doomRunning = true;            // cleared by js_doom_quit to stop the loop
 
 WebAssembly.instantiateStreaming(fetch('/doom/doom.wasm'), importObject)
     .then(obj => {
@@ -198,7 +200,6 @@ WebAssembly.instantiateStreaming(fetch('/doom/doom.wasm'), importObject)
             ["ctrlButton", 0x80 + 0x1d],
             ["spaceButton", 32],
             ["altButton", 0x80 + 0x38]].forEach(([elementID, keyCode]) => {
-                console.log(elementID + " for " + keyCode);
                 var button = document.getElementById(elementID);
                 //button.addEventListener("click", () => {keyDown(keyCode); keyUp(keyCode)} );
                 button.addEventListener("touchstart", () => keyDown(keyCode));
@@ -223,11 +224,10 @@ WebAssembly.instantiateStreaming(fetch('/doom/doom.wasm'), importObject)
             printFocusInHint();
 
             /*Main game loop*/
-            console.log('[doom] starting game loop');
             function step(timestamp) {
                 obj.instance.exports.doom_loop_step();
                 obj.instance.exports.check_linedef_crossings();
-                window.requestAnimationFrame(step);
+                if (_doomRunning) window.requestAnimationFrame(step);
             }
             window.requestAnimationFrame(step);
         };
@@ -464,17 +464,22 @@ WebAssembly.instantiateStreaming(fetch('/doom/doom.wasm'), importObject)
             }
         };
 
+        /*Subscribe to the doomQuit event, fired when the player confirms quit.
+          The game loop has already been stopped by the time the callback runs.*/
+        window.onDoomQuit = function(callback) {
+            if (!_doomRunning) {
+                callback(new CustomEvent('doomQuit'));
+            } else {
+                document.addEventListener('doomQuit', callback, { once: true });
+            }
+        };
+
         /*Signal to the page that WASM is loaded and _doomLaunch is ready*/
-        console.log('[doom] wasm ready. window._doomReady is:', typeof window._doomReady);
         if (typeof window._doomReady === 'function') {
             window._doomReady();
         } else {
             console.warn('[doom] window._doomReady is not defined — game will not start. Call window._doomLaunch([]) to start manually.');
         }
-        document.addEventListener('levelLoaded', (e) => {
-            console.log('Level ready:', e.detail); // { episode: 1, map: 9 }                                        
-            const state = saveState();             // x, y, angle all valid now                                       
-        });
     }).catch(err => {
         console.error('[doom] failed to load doom.wasm:', err);
     });
