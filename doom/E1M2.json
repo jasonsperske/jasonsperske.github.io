@@ -11,6 +11,11 @@
             "type": "use",
             "linedef": 690,
             "door": "E1M2-viewport"
+        },
+        {
+            "type": "use",
+            "linedef": 317,
+            "door": "E1M2-elevator"
         }
     ],
     "doors": {
@@ -25,6 +30,81 @@
             "y": 1135.9888458251953,
             "angleDeg": -128.671875,
             "redCard": true
+        },
+        "E1M2-elevator": {
+            "x": -536.4402770996094,
+            "y": -70.59603881835938,
+            "angleDeg": 178.2421875
+        },
+        "E1M2-normal": {
+            "x": -32,
+            "y": -240,
+            "rotation": 90
+        },
+        "E1M2-partner": {
+            "x": -80,
+            "y": -176,
+            "rotation": 90
+        },
+        "E1M2-ally": {
+            "x": 64,
+            "y": -176,
+            "rotation": 90
+        },
+        "E1M2-buddy": {
+            "x": 32,
+            "y": -240,
+            "rotation": 90
+        },
+        "E1M2-dm1": {
+            "x": -224,
+            "y": 512,
+            "rotation": 0
+        },
+        "E1M2-dm2": {
+            "x": 32,
+            "y": -848,
+            "rotation": 0
+        },
+        "E1M2-dm3": {
+            "x": -2080,
+            "y": 1120,
+            "rotation": 270
+        },
+        "E1M2-dm4": {
+            "x": -1760,
+            "y": 1984,
+            "rotation": 0
+        },
+        "E1M2-dm5": {
+            "x": 1024,
+            "y": -704,
+            "rotation": 90
+        },
+        "E1M2-dm6": {
+            "x": 192,
+            "y": 512,
+            "rotation": 270
+        },
+        "E1M2-dm7": {
+            "x": -1264,
+            "y": 192,
+            "rotation": 0
+        },
+        "E1M2-dm8": {
+            "x": -1232,
+            "y": 1152,
+            "rotation": 180
+        },
+        "E1M2-dm9": {
+            "x": -672,
+            "y": 1152,
+            "rotation": 270
+        },
+        "E1M2-dm10": {
+            "x": -2016,
+            "y": -688,
+            "rotation": 90
         }
     }
 }
