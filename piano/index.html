@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piano Practice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Piano Practice</h1>
+    <div class="controls">
+      <label>
+        Instrument
+        <select id="instrument"></select>
+      </label>
+      <label>
+        Volume
+        <input type="range" id="volume" min="0" max="100" value="50" />
+      </label>
+    </div>
+    <div id="midi-status" class="status checking">Checking MIDI…</div>
+  </header>
+
+  <main>
+    <div id="left-col">
+      <div class="mode-toggle">
+        <button type="button" data-mode="lessons" class="active">Lessons</button>
+        <button type="button" data-mode="advanced">Advanced</button>
+      </div>
+
+      <section id="lessons-mode">
+        <div id="lesson-collapsed">
+          <button id="change-lesson" type="button">← Change lesson</button>
+          <span id="lesson-current-title"></span>
+          <span id="lesson-current-meta"></span>
+        </div>
+        <ul id="lesson-list"></ul>
+      </section>
+
+      <section id="advanced-mode" class="hidden">
+        <label id="drop-zone">
+          <input type="file" id="file-input" accept=".mid,.midi" hidden />
+          <span class="dz-text">Drop a MIDI file here, or click to choose</span>
+        </label>
+      </section>
+
+      <div id="transport" class="hidden">
+        <button id="play-button" type="button">▶ Start</button>
+        <label class="toggle">
+          <input type="checkbox" id="metronome-toggle" />
+          Metronome
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="loop-toggle" />
+          Loop
+        </label>
+        <span id="transport-hint">3-beat count-in plays the first note</span>
+      </div>
+
+      <section id="staff-section">
+        <svg id="staff" viewBox="0 0 800 200" width="800" height="200"></svg>
+      </section>
+
+      <section id="file-info" class="hidden">
+        <h2 id="info-heading">Now Playing</h2>
+        <dl id="file-summary"></dl>
+        <div id="note-preview-container">
+          <h2>First notes</h2>
+          <ul id="note-preview"></ul>
+        </div>
+      </section>
+    </div>
+
+    <aside id="info">
+      <h2>Score</h2>
+      <div id="current-score"><div class="score-empty">—</div></div>
+
+      <div class="aside-header">
+        <h2>History</h2>
+        <button id="clear-history" type="button" hidden>Clear</button>
+      </div>
+      <ul id="score-history"><li class="empty">No scores yet</li></ul>
+
+      <h2>Pressed</h2>
+      <ul id="pressed-notes"><li class="empty">–</li></ul>
+
+      <h2>Devices</h2>
+      <ul id="device-list"><li class="empty">–</li></ul>
+    </aside>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
